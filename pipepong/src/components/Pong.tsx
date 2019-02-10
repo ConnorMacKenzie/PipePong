@@ -6,7 +6,9 @@ const PLAYHEIGHT = 400;
 const PLAYWIDTH = 800;
 
 interface PongProps {
-
+  height:number,
+  width:number,
+  leaderboard:Array<object>
 }
 interface PongState {
   paddleDistFromWall: number;
@@ -21,7 +23,7 @@ class Pong extends Component<PongProps, PongState> {
   }
   render() {
     return (
-        <div style={{height:""+PLAYHEIGHT+"px", width: ""+PLAYWIDTH+"px", border: "solid"}}>
+        <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
            <Ball minX={0} maxX={PLAYWIDTH} minY={-PLAYHEIGHT} maxY={0} dx={4} dy={-4}/>
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall}/>
            <input 
