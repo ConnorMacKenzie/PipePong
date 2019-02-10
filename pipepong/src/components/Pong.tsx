@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, isValidElement } from 'react';
 import Ball from './Ball'
 import Paddle from './Paddle'
 
@@ -21,6 +21,7 @@ interface PongState {
 }
 class Pong extends Component<PongProps, PongState> {
   fieldInput: HTMLInputElement | null = null;
+  paddleRef: Paddle | null = null;
   constructor(props:PongProps){
     super(props);
     this.state = {
@@ -28,7 +29,7 @@ class Pong extends Component<PongProps, PongState> {
       curX : 100,
       curY : 50,
       dx : 4,
-      dy : -4,
+      dy : -4
     };
   }
 
@@ -39,14 +40,22 @@ class Pong extends Component<PongProps, PongState> {
     let nextX = curX + this.state.dx;
     let nextY = curY + this.state.dy;
     let hitPaddle = false;
-    if((nextY >= this.state.paddleDistFromWall && nextY <= this.state.paddleDistFromWall+PLAYHEIGHT/4) && (nextX <= 25))
+    let dx = (hitPaddle || nextX + SHAPEWIDTH > PLAYWIDTH || nextX < 0 ? this.state.dx * -1 : this.state.dx);
+    let dy = (hitPaddle || nextY + SHAPEWIDTH > PLAYHEIGHT || nextY < 0 ? this.state.dy * -1 : this.state.dy);
+    if((nextY >= this.state.paddleDistFromWall && nextY <= this.state.paddleDistFromWall+PLAYHEIGHT/4) && (nextX <= 25)){
+      if(this.paddleRef !== null){
+        const velocity = Math.sqrt(dx*dx + dy*dy);
         hitPaddle = true;
-
+        const newAngle = this.paddleRef.redirectBall(nextX,nextY);
+        dx = Math.cos(newAngle) * velocity;
+        dy = Math.sin(newAngle) * velocity;
+      }
+    }
     this.setState({
       curX : nextX,
       curY : nextY,
-      dx : (hitPaddle || nextX + SHAPEWIDTH > PLAYWIDTH || nextX < 0 ? this.state.dx * -1 : this.state.dx),
-      dy : (hitPaddle || nextY + SHAPEWIDTH > PLAYHEIGHT || nextY < 0 ? this.state.dy * -1 : this.state.dy)
+      dx : dx,
+      dy : dy
   });
 }
 
@@ -55,7 +64,7 @@ class Pong extends Component<PongProps, PongState> {
     return (
         <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
            <Ball curX={this.state.curX} curY={this.state.curY} playerColor={this.props.playerColor}/>
-           <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall}/>
+           <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall} ref={ref=>this.paddleRef=ref}/>
     </div>
     );
   }
@@ -69,9 +78,9 @@ class Pong extends Component<PongProps, PongState> {
   handleInput(e:any){
     let move = 0;
     if (e.key == "j" && this.state.paddleDistFromWall < PLAYHEIGHT*3/4){
-      move = 5; // move down screen
+      move = 20; // move down screen
     } else if (e.key == "k" && this.state.paddleDistFromWall >= 5) {
-      move = -5; // move up screen
+      move = -20; // move up screen
     }
     this.setState({
       paddleDistFromWall: this.state.paddleDistFromWall + move

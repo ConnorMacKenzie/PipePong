@@ -29,6 +29,19 @@ class Paddle extends React.Component<CLASSProps, CLASSState> {
             </div>
         )
     }
+    /**
+     * 
+     * @param ballx x position of ball
+     * @param bally y position of ball
+     * @returns new direction of ball in radians relative to positive x axis
+     */
+    redirectBall(ballx:number, bally:number){
+        const cy = this.props.distanceFromWall + this.props.playHeight/8; //center of paddle y
+        const cx = DIST_FROM_HORIZONTAL_WALL+10; //center of paddle x
+        const dy = bally - cy; //distance y that ball is from paddle center
+        const dx = bally - cx; // distance x that ball is from paddle center
+        return Math.atan2(dy,dx);
+    }
 }
 
 export default Paddle;
