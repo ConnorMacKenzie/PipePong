@@ -18,6 +18,7 @@ export interface BallState {
   dy: number;
 }
 class Ball extends React.Component<BallProps, BallState> {
+  wasDestroyed: boolean = false;
   constructor(props : BallProps) {
     super(props);
     this.state = {

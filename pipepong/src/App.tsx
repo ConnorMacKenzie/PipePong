@@ -112,8 +112,17 @@ class App extends React.Component<CLASSProps, CLASSState> {
 
   generateBall(velocity:number, angle:number, source:string){
     console.log("A ball was made with\nvelocity: " + velocity + "\nangle: " + angle)
+    let colour = "black";
+    for(let p of this.state.leaderboard){
+      if(p.sessionId === source){
+        colour = p.color;
+        break;
+      }
+    }
+    const ballID = v4()
     if(this.pong){
-      this.pong.addBall(700, 100, "black", velocity, angle, source);
+      this.state.leaderboard[0].sessionId
+      this.pong.addBall(700, 100, colour, velocity, angle, ballID);
     }
   }
 
@@ -162,7 +171,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             <table>
               <tr>
                 <td>
-                  <Pong ref={pong => {this.pong = pong}} height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame} sendBallCallBack={this.sendBall}/>
+                  <Pong key="PONGGAME" ref={pong => {this.pong = pong}} height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame} sendBallCallBack={this.sendBall}/>
                 </td>
                 <td>
                   <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>

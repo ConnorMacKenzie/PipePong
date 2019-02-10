@@ -17,6 +17,7 @@ interface PongProps {
 interface PongState {
   paddleDistFromWall: number;
   balls: BallProps[];
+  needToUpdate: boolean;
 }
 class Pong extends Component<PongProps, PongState> {
   fieldInput: HTMLInputElement | null = null;
@@ -25,6 +26,7 @@ class Pong extends Component<PongProps, PongState> {
   constructor(props:PongProps){
     super(props);
     this.state = {
+      needToUpdate: false,
       paddleDistFromWall: 20,
       balls: [
         {
@@ -34,7 +36,6 @@ class Pong extends Component<PongProps, PongState> {
           velocity: 5,
           angle: -2,
           originatingPlayer: "me"
-
         }
       ]
     };
@@ -58,9 +59,12 @@ class Pong extends Component<PongProps, PongState> {
   }
 
   repositionBalls() {
-    for(let idx=0;idx<this.state.balls.length; idx++){
-      let ball = (this.refs[this.state.balls[idx].originatingPlayer] as Ball);
-      if(!ball){
+    const nextBalls: BallProps[] = [];
+    const balls = this.state.balls;
+    for(let idx=0;idx<balls.length; idx++){
+      console.log("NUMBER OF BALLS LOOP: " + balls.length);
+      let ball = (this.refs[balls[idx].originatingPlayer] as Ball);
+      if(!ball || ball.wasDestroyed){
         continue;
       }
       // nextX + SHAPEWIDTH > PLAYWIDTH || nextX < 0 ? this.state.dx * -1 : this.state.dx);
@@ -75,28 +79,21 @@ class Pong extends Component<PongProps, PongState> {
       }
       if(ball.state.curX <= 1){
         this.props.loseCallback("Lost", "We're not sure yet");
-        var newBallList = this.state.balls.slice();
-        newBallList.splice(idx);
-        idx -= 1;
-        this.setState(
-          {
-           balls: newBallList
-          }
-        )
-      }
-      if(ball.state.curX >= PLAYWIDTH - 30){
+      } else if(ball.state.curX >= PLAYWIDTH - 30){
         this.props.sendBallCallBack(ball.state.curY);
-        var newBallList = this.state.balls.slice();
-        newBallList.splice(idx);
+        ball.wasDestroyed = true;
+        balls.splice(idx, 1);
         idx -= 1;
-        this.setState(
-          {
-           balls: newBallList
-          }
-        )
+        console.log("NUMBER OF BALLS NOW!! ",balls.length);
+      } else {
+        ball.updatePosition();
+        nextBalls.push(balls[idx]);
       }
-      ball.updatePosition();
     }
+    this.setState({
+      balls:nextBalls,
+      needToUpdate: true
+    })
 }
 
   render() {
@@ -104,16 +101,24 @@ class Pong extends Component<PongProps, PongState> {
         <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid", position : "relative", top: "0px"}}>
            {this.state.balls.map((elem) => <Ball key={elem.originatingPlayer} {...elem} ref={elem.originatingPlayer}/>)}
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall} ref={ref=>this.paddleRef=ref}/>
+           {this.state.balls.length}
     </div>
     );
   }
   componentDidMount(){
     if(this.fieldInput !== null){this.fieldInput.focus()}
-    this.updaterID = setInterval(() => this.repositionBalls() ,10);
+    //this.updaterID = setInterval(() => this.repositionBalls() ,10);
     document.addEventListener("keypress", (e)=>this.handleInput(e), false);
+    this.setState({needToUpdate:true});
   }
   componentWillUnmount(){
-    clearInterval(this.updaterID);
+    //clearInterval(this.updaterID);
+  }
+  componentDidUpdate(prevProps:PongProps, prevState:PongState){
+    if(this.state.needToUpdate && !prevState.needToUpdate){
+      setTimeout(() => this.repositionBalls() ,10);
+      this.setState({needToUpdate:false});
+    }
   }
 
 
