@@ -39,7 +39,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                 <h4>
                 Choose your color!
                 </h4>
-                <picker.TwitterPicker color= {this.state.color} onChange={(c)=>this.changeColor(c)} />
+                <TwitterPicker color= {this.state.color} onChange={(c)=>this.changeColor(c)} />
                 <br/>
                 <h3>
                     Rules
