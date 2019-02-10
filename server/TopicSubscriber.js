@@ -1,6 +1,6 @@
 var SubHandler = require("./SubHandler.js");
 
-var TopicSubscriber = function (solaceModule, topicName) {
+exports.TopicSubscriber = function (solaceModule, topicName) {
     'use strict';
     var solace = solaceModule;
     var subscriber = {};
@@ -173,5 +173,3 @@ var TopicSubscriber = function (solaceModule, topicName) {
 
     return subscriber;
 };
-
-module.exports.TopicSubscriber = TopicSubscriber;

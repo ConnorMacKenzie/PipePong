@@ -1,4 +1,4 @@
-var TopicPublisher = function (solaceModule, topicName) {
+var TopicPublisher = function (solaceModule, topicName, payload) {
     'use strict';
     var solace = solaceModule;
     var publisher = {};
@@ -82,7 +82,7 @@ var TopicPublisher = function (solaceModule, topicName) {
     // Publishes one message
     publisher.publish = function () {
         if (publisher.session !== null) {
-            var messageText = 'HELLOOOOOO WORLD';
+            var messageText = payload;
             var message = solace.SolclientFactory.createMessage();
             message.setDestination(solace.SolclientFactory.createTopicDestination(publisher.topicName));
             message.setBinaryAttachment(messageText);
@@ -101,9 +101,6 @@ var TopicPublisher = function (solaceModule, topicName) {
 
     publisher.exit = function () {
         publisher.disconnect();
-        setTimeout(function () {
-            process.exit();
-        }, 1000); // wait for 1 second to finish
     };
 
     // Gracefully disconnects from Solace message router
