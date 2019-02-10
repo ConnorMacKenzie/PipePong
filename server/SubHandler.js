@@ -11,6 +11,7 @@ module.exports.handleMessage = (topic, payload) => {
 function handleJoin(payload){
   console.log('Handling join');
   console.log('PAYLOAD: ' + payload);
+
   let data = JSON.parse(payload);
   var player = new Player(data.name, data.sessionId, data.color);
   leaderboard.addPlayer(player)
@@ -22,6 +23,7 @@ function handleJoin(payload){
 function handleLeave(payload){
   console.log('Handling leave');
   console.log('PAYLOAD: ' + payload);
+
   let data = JSON.parse(payload);
   var player = new Player(data.name, data.sessionId, data.color);
   leaderboard.removePlayer(player)
