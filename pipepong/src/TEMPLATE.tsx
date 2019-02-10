@@ -9,7 +9,7 @@ interface CLASSState {
 
 }
 
-class CLASS extends React.Component<CLASSProps, CLASSProps> {
+class CLASS extends React.Component<CLASSProps, CLASSState> {
     public render(){
         return (
             <div className = "CLASS">
