@@ -13,12 +13,20 @@ const PONG_WIDTH:number= 800;
 interface CLASSProps {
 }
 
+interface player{
+  height:number;
+  y:number;
+  sessionId:string;
+  color:string;
+  timeAlive:number;
+}
+
 interface CLASSState {
     joined: Boolean;
     name: string;
     color: string;
     sessionId: string;
-    leaderboard: Array<object>;
+    leaderboard: Array<player>;
     lost: Boolean;
 }
 
@@ -28,7 +36,7 @@ interface JoinMessage {
   color:string;
 }
 interface LeaderBoardMessage {
-  leaderboard:Array<object>;
+  leaderboard:Array<player>;
 }
 interface LeaveMessage {
   sessionId:string;
@@ -57,6 +65,8 @@ class App extends React.Component<CLASSProps, CLASSState> {
         this.leaderboardCallBack = this.leaderboardCallBack.bind(this);
         this.leaveGame = this.leaveGame.bind(this);
         this.loseGame = this.loseGame.bind(this);
+        this.sendBall = this.sendBall.bind(this);
+        this.ballCallBack = this.ballCallBack.bind(this);
         this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack);
         this.commHandler.connect();
     };
@@ -116,6 +126,20 @@ class App extends React.Component<CLASSProps, CLASSState> {
     }, 2000)
   }
 
+  sendBall(y:number){
+    var targetSessionId = this.findPlayerByHeight(y);
+    var sessionId = this.state.sessionId;
+    this.commHandler.publishBall(sessionId, targetSessionId, 2, 5);
+  }
+
+  findPlayerByHeight(y:number){
+    for(let player of this.state.leaderboard){
+      if (y>=player.y && y<player.y+player.height){
+        return player.sessionId;
+      }
+    }
+  }
+
   render() {
       if(this.state.lost)
         return (
@@ -127,7 +151,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             <table>
               <tr>
                 <td>
-                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame}/>
+                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame} sendBallCallBack={this.sendBall}/>
                 </td>
                 <td>
                   <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>
