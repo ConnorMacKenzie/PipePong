@@ -101,9 +101,11 @@ class App extends React.Component<CLASSProps, CLASSState> {
   }
   ballCallBack(message:BallMessage){
     console.log("a ball was found")
-    // if (this.state.sessionId == message.targetSessionId){
-    console.log("a ball was received")
-    this.generateBall(message.velocity, message.angle, message.sessionId);
+    if (this.state.sessionId == message.targetSessionId){
+      console.log("a ball was received")
+
+      this.generateBall(message.velocity, message.angle, message.sessionId);
+    }
   }
   pingCallBack(){
     console.log("received ping")
