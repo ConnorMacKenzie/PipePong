@@ -5,7 +5,7 @@ import * as picker from 'react-color';
 interface LoginPageProps {
     // properties this component recieves from parent here
     // loginAction?: (name:string, color:string) => void;
-    handleJoin?: () => void;
+    handleJoin?: (name:string, color:string) => void;
 }
 
 interface LoginPageState {
@@ -42,7 +42,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
     handleJoin(){
         if(this.props.handleJoin !== undefined){
-            this.props.handleJoin();
+            this.props.handleJoin(this.state.enteredUsername, this.state.color);
         }
     }
     updateUsername(username: React.ChangeEvent<HTMLInputElement>){

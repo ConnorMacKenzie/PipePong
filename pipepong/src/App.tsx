@@ -8,6 +8,8 @@ interface CLASSProps {
 
 interface CLASSState {
     joined: Boolean;
+    name: string;
+    color: string;
 }
 
 class App extends React.Component<CLASSProps, CLASSState> {
@@ -15,13 +17,17 @@ class App extends React.Component<CLASSProps, CLASSState> {
         super(props);
         this.state = {
             joined: false,
-            }
+            name: "",
+            color: "#00FF00"
+        }
     };
 
 
-  join() {
+  join(name:string, color:string) {
     this.setState({
         joined: true,
+        name:name,
+        color: color
     });
   }
 
@@ -29,7 +35,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
       if(this.state.joined)
         return(<Pong/>);
       else
-        return(<Login handleJoin={() => this.join()}/>);
+        return(<Login handleJoin={(name,color) => this.join(name,color)}/>);
   }
 }
 
