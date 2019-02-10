@@ -74,11 +74,11 @@ class App extends React.Component<CLASSProps, CLASSState> {
       leaderboard: leaderboard
     })
   }
-  joinCallBack(sessionId:string, name:string, color:string){
-    console.log();
+  joinCallBack(message:JoinMessage){
+    console.log("Join Callback", message);
   }
-  leaveCallBack(){
-    console.log();
+  leaveCallBack(message:LeaveMessage){
+    console.log("Leave Callback", message);
   }
   ballCallBack(message:BallMessage){
     if (this.state.sessionId == message.targetSessionId){
