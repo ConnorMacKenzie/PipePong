@@ -11,19 +11,16 @@ class Pipe extends Component {
     render() {
         return (
             <Fragment>
-                <tr width={this.props.width} 
-                        height={this.props.height} 
+                <tr width={this.props.width}
+                        height={this.props.height}
                         y={this.props.y}
                         >
                     <td
-                        style={{
+                      style={{
                         backgroundColor: this.props.color,
+                        border: "15px solid white",
                         borderLeftColor: this.props.color,
-                        border: "15px solid",
-                        borderTopColor: "white",
-                        borderBottomColor: "white",
-                        borderRightColor: "white",
-                        }}>
+                      }}>
                         {this.props.name}
                     </td>
                 </tr>

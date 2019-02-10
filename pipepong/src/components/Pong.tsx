@@ -50,7 +50,7 @@ class Pong extends Component<PongProps, PongState> {
       velocity: velocity,
       angle: angle,
       originatingPlayer: originatingPlayer,
-    } 
+    }
     console.log("newball was pushed to the list")
     balls.push(newBall);
     this.setState({
@@ -100,7 +100,7 @@ class Pong extends Component<PongProps, PongState> {
     return (
         <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid", position : "relative", top: "0px"}}>
            {this.state.balls.map((elem) => <Ball key={elem.originatingPlayer} {...elem} ref={elem.originatingPlayer}/>)}
-           <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall} ref={ref=>this.paddleRef=ref}/>
+           <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall} color={this.props.playerColor} ref={ref=>this.paddleRef=ref}/>
            {this.state.balls.length}
     </div>
     );

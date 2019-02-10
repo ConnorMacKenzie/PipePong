@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 
 const DIST_FROM_HORIZONTAL_WALL = 20;
+const PADDLE_WIDTH = 10;
+
 interface CLASSProps {
     playHeight : number,
     /* the distance from VERTICAL wall */
     distanceFromWall : number,
+    color: string;
 }
 
 interface CLASSState {
@@ -18,8 +21,8 @@ class Paddle extends React.Component<CLASSProps, CLASSState> {
     render() {
         let Paddlestyle : React.CSSProperties = {
             height: ""+this.props.playHeight/4+"px",
-            width: "10px",
-            background: "black",
+            width: ""+PADDLE_WIDTH+"px",
+            background: this.props.color,
             position: "absolute",
             top: ""+this.props.distanceFromWall+"px",
             left: ""+DIST_FROM_HORIZONTAL_WALL+"px",
