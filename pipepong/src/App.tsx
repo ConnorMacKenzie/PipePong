@@ -67,7 +67,8 @@ class App extends React.Component<CLASSProps, CLASSState> {
         this.loseGame = this.loseGame.bind(this);
         this.sendBall = this.sendBall.bind(this);
         this.ballCallBack = this.ballCallBack.bind(this);
-        this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack);
+        this.pingCallBack = this.pingCallBack.bind(this);
+        this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack, this.pingCallBack);
         this.commHandler.connect();
     };
 
@@ -100,6 +101,10 @@ class App extends React.Component<CLASSProps, CLASSState> {
     if (this.state.sessionId == message.targetSessionId){
       this.generateBall(message.velocity, message.angle, message.sessionId);
     }
+  }
+  pingCallBack(){
+    console.log("received ping")
+    this.commHandler.publishPong(this.state.sessionId);
   }
 
   generateBall(velocity:number, angle:number, source:string){
