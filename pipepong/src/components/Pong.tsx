@@ -7,7 +7,9 @@ const PLAYWIDTH = 800;
 const SHAPEWIDTH = 40;
 
 interface PongProps {
-
+  height:number,
+  width:number,
+  leaderboard:Array<object>
 }
 interface PongState {
   paddleDistFromWall: number;
@@ -22,8 +24,8 @@ class Pong extends Component<PongProps, PongState> {
     super(props);
     this.state = {
       paddleDistFromWall: 20,
-      curX : 0,
-      curY : 0,
+      curX : 100,
+      curY : 50,
       dx : 4,
       dy : -4,
     };
@@ -31,18 +33,26 @@ class Pong extends Component<PongProps, PongState> {
 
 
   repositionBall() {
-      this.setState({
-          curX : this.state.curX + this.state.dx,
-          curY : this.state.curY + this.state.dy,
-        dx : (this.state.curX + this.state.dx + SHAPEWIDTH > PLAYWIDTH || this.state.curX + this.state.dx < 0 ? this.state.dx * -1 : this.state.dx),
-        dy : (this.state.curY + this.state.dy + SHAPEWIDTH > PLAYHEIGHT || this.state.curY + this.state.dy < 0 ? this.state.dy * -1 : this.state.dy)
+    let curX = this.state.curX;
+    let curY = this.state.curY;
+    let nextX = curX + this.state.dx;
+    let nextY = curY + this.state.dy;
+    let hitPaddle = false;
+    if((nextY >= this.state.paddleDistFromWall && nextY <= this.state.paddleDistFromWall+PLAYHEIGHT/4) && (nextX <= 25))
+        hitPaddle = true;
+
+    this.setState({
+      curX : nextX,
+      curY : nextY,
+      dx : (hitPaddle || nextX + SHAPEWIDTH > PLAYWIDTH || nextX < 0 ? this.state.dx * -1 : this.state.dx),
+      dy : (hitPaddle || nextY + SHAPEWIDTH > PLAYHEIGHT || nextY < 0 ? this.state.dy * -1 : this.state.dy)
   });
 }
 
 
   render() {
     return (
-        <div style={{height:""+PLAYHEIGHT+"px", width: ""+PLAYWIDTH+"px", border: "solid"}}>
+        <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
            <Ball curX={this.state.curX} curY={this.state.curY}/>
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall}/>
            <input

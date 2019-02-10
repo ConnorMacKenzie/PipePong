@@ -1,11 +1,11 @@
 import React, { Component, ButtonHTMLAttributes } from 'react';
-import * as picker from 'react-color';
+import { TwitterPicker, ColorResult} from 'react-color';
 
 
 interface LoginPageProps {
     // properties this component recieves from parent here
-    // loginAction?: (name:string, color:string) => void;
     handleJoin?: (name:string, color:string) => void;
+    // handleJoin?: () => void;
 }
 
 interface LoginPageState {
@@ -36,7 +36,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                 <input value = {this.state.enteredUsername} onChange = {this.updateUsername}/>
                 {/* </input> */}
                 <br/>
-                <picker.TwitterPicker color= {this.state.color} onChange={(c)=>this.changeColor(c)} />
+                <TwitterPicker color= {this.state.color} onChange={(c)=>this.changeColor(c)} />
             </div>
         )
     }
@@ -50,7 +50,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
             enteredUsername: username.target.value
        });
     }
-    changeColor(color:picker.ColorResult){
+    changeColor(color:ColorResult){
         this.setState({
             color: color.hex
         })
