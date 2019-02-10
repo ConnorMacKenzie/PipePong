@@ -40,11 +40,29 @@ class Pong extends Component<PongProps, PongState> {
     };
   }
 
+  addBall(initialX:number, initialY:number, playerColor:string, velocity:number, angle:number, originatingPlayer:string){
+    var balls = this.state.balls.slice()
+    var newBall:BallProps= {
+      initialX : initialX,
+      initialY : initialY,
+      playerColor : playerColor,
+      velocity: velocity,
+      angle: angle,
+      originatingPlayer: originatingPlayer,
+    } 
+    console.log("newball was pushed to the list")
+    balls.push(newBall);
+    this.setState({
+      balls: balls
+    })
+  }
 
   repositionBalls() {
     for(let idx=0;idx<this.state.balls.length; idx++){
       let ball = (this.refs[this.state.balls[idx].originatingPlayer] as Ball);
-      
+      if(!ball){
+        continue;
+      }
       // nextX + SHAPEWIDTH > PLAYWIDTH || nextX < 0 ? this.state.dx * -1 : this.state.dx);
       if(ball.state.curY + SHAPEWIDTH > PLAYHEIGHT || ball.state.curY < 0 ){
         ball.bounce();
@@ -54,6 +72,28 @@ class Pong extends Component<PongProps, PongState> {
           const newAngle = this.paddleRef.redirectBall(ball.state.curX, ball.state.curY);
           ball.bounceOffPaddle(newAngle);
         }
+      }
+      if(ball.state.curX <= 1){
+        this.props.loseCallback("Lost", "We're not sure yet");
+        var newBallList = this.state.balls.slice();
+        newBallList.splice(idx);
+        idx -= 1;
+        this.setState(
+          {
+           balls: newBallList
+          }
+        )
+      }
+      if(ball.state.curX >= PLAYWIDTH - 30){
+        this.props.sendBallCallBack(ball.state.curY);
+        var newBallList = this.state.balls.slice();
+        newBallList.splice(idx);
+        idx -= 1;
+        this.setState(
+          {
+           balls: newBallList
+          }
+        )
       }
       ball.updatePosition();
     }
