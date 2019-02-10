@@ -20,7 +20,7 @@ class Paddle extends React.Component<CLASSProps, CLASSState> {
             height: ""+this.props.playHeight/4+"px",
             width: "10px",
             background: "black",
-            position: "relative",
+            position: "absolute",
             top: ""+this.props.distanceFromWall+"px",
             left: ""+DIST_FROM_HORIZONTAL_WALL+"px",
         }
@@ -30,7 +30,7 @@ class Paddle extends React.Component<CLASSProps, CLASSState> {
         )
     }
     /**
-     * 
+     *
      * @param ballx x position of ball
      * @param bally y position of ball
      * @returns new direction of ball in radians relative to positive x axis

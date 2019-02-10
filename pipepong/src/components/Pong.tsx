@@ -73,7 +73,7 @@ class Pong extends Component<PongProps, PongState> {
 
   render() {
     return (
-        <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
+        <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid", position : "relative", top: "0px"}}>
            <Ball curX={this.state.curX} curY={this.state.curY} playerColor={this.props.playerColor}/>
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall} ref={ref=>this.paddleRef=ref}/>
     </div>
