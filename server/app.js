@@ -1,4 +1,3 @@
-var TopicPublisher = require("./TopicPublisher");
 var TopicSubscriber = require("./TopicSubscriber");
 
 var solace = require('solclientjs').debug; // logging supported
@@ -13,22 +12,25 @@ solace.SolclientFactory.init(factoryProps);
 solace.SolclientFactory.setLogLevel(solace.LogLevel.WARN);
 
 // create the subscriber, specifying the name of the subscription topic
-var subscriber = new TopicSubscriber(solace, 'test');
-
-// create the publisher, specifying the name of the subscription topic
-var publisher = new TopicPublisher(solace, 'test');
+var joinSubscriber = new TopicSubscriber.TopicSubscriber(solace, 'join');
+var leaveSubscriber = new TopicSubscriber.TopicSubscriber(solace, 'leave');
+var ballSubscriber = new TopicSubscriber.TopicSubscriber(solace, 'ball');
+var testSubscriber = new TopicSubscriber.TopicSubscriber(solace, 'test');
 
 // subscribe to messages on Solace message router
-subscriber.run(process.argv);
-
-// publish message to Solace message router
-//publisher.run(process.argv);
+joinSubscriber.run(process.argv);
+leaveSubscriber.run(process.argv);
+ballSubscriber.run(process.argv);
+testSubscriber.run(process.argv);
 
 // wait to be told to exit
-subscriber.log('Press Ctrl-C to exit');
+console.log('Press Ctrl-C to exit');
 process.stdin.resume();
 
 process.on('SIGINT', function () {
     'use strict';
-    subscriber.exit();
+    joinSubscriber.exit();
+    leaveSubscriber.exit();
+    ballSubscriber.exit();
+    testSubscriber.exit();
 });
