@@ -7,10 +7,11 @@ const PLAYWIDTH = 800;
 const SHAPEWIDTH = 40;
 
 interface PongProps {
-  height:number
-  width:number
-  leaderboard:Array<object>
+  height:number,
+  width:number,
+  leaderboard:Array<object>,
   playerColor:string
+  loseCallback:Function
 }
 interface PongState {
   paddleDistFromWall: number;
@@ -46,11 +47,23 @@ class Pong extends Component<PongProps, PongState> {
       if(this.paddleRef !== null){
         const velocity = Math.sqrt(dx*dx + dy*dy);
         hitPaddle = true;
+<<<<<<< HEAD
         const newAngle = this.paddleRef.redirectBall(nextX,nextY);
         dx = Math.cos(newAngle) * velocity;
         dy = Math.sin(newAngle) * velocity;
       }
     }
+=======
+    else if(nextX <= 1){
+      console.log("lost")
+      this.setState({
+        curX: PLAYWIDTH*2
+        }
+      )
+      this.props.loseCallback("Lost", "We don't know")
+    }
+
+>>>>>>> 065b058... Add loseing functionality and screen to client
     this.setState({
       curX : nextX,
       curY : nextY,
@@ -58,7 +71,6 @@ class Pong extends Component<PongProps, PongState> {
       dy : dy
   });
 }
-
 
   render() {
     return (

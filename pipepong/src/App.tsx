@@ -19,6 +19,7 @@ interface CLASSState {
     color: string;
     sessionId: string;
     leaderboard: Array<object>;
+    lost: Boolean;
 }
 
 interface JoinMessage {
@@ -51,9 +52,11 @@ class App extends React.Component<CLASSProps, CLASSState> {
             color: "#00FF00",
             sessionId: "",
             leaderboard: [],
+            lost: false,
         }
         this.leaderboardCallBack = this.leaderboardCallBack.bind(this);
         this.leaveGame = this.leaveGame.bind(this);
+        this.loseGame = this.loseGame.bind(this);
         this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack);
         this.commHandler.connect();
     };
@@ -94,21 +97,37 @@ class App extends React.Component<CLASSProps, CLASSState> {
   }
 
   leaveGame(sessionId:string, reason:string, killedBy:string){
-    console.log("Sending a leave message")
     this.setState({
       joined: false
     })
     this.commHandler.publishLeave(sessionId, reason, killedBy);
   }
 
+  loseGame(reason:string, killedBy:string){
+    this.setState({
+      joined: false,
+      lost: true
+    });
+    setTimeout(()=>{
+      this.setState({
+        lost: false
+      });
+      this.leaveGame(this.state.sessionId, reason, killedBy);
+    }, 2000)
+  }
+
   render() {
-      if(this.state.joined)
+      if(this.state.lost)
+        return (
+          <h1>You Lost!</h1>
+        )
+      else if(this.state.joined)
         return(
           <Fragment>
             <table>
               <tr>
                 <td>
-                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color}/>
+                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame}/>
                 </td>
                 <td>
                   <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>
