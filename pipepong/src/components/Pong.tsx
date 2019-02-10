@@ -30,7 +30,7 @@ class Pong extends Component<PongProps, PongState> {
         {
           initialX : 500,
           initialY : 100,
-          playerColor : "#FF0000",
+          playerColor : this.props.playerColor,
           velocity: 5,
           angle: -2,
           originatingPlayer: "me"
