@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
+import Ball from './Ball'
 
 class Pong extends Component {
-  ctx?: CanvasRenderingContext2D;
   render() {
     return (
       <div className="pong">
-        <canvas id="myCanvas" ref="myCanvas" width="480" height="320"></canvas>
+        <div style={{height:"400px", width: "727px", border: "solid"}}>
+        <Ball minX={0} maxX={727} minY={-400} maxY={0} dx={4} dy={-4}/>
+        </div>
       </div>
     );
   }
   componentDidMount(){
-    const ctx = (this.refs.myCanvas as HTMLCanvasElement).getContext("2d");
-    if(ctx !== null){
-        this.ctx = (ctx as CanvasRenderingContext2D);
-    } else {
-        throw "NO CONTEXT";
-    }
-    this.ctx.beginPath();
-    this.ctx.moveTo(100, 100);
-    this.ctx.lineTo(100, 200);
-    this.ctx.stroke();
-    this.ctx.closePath();
   }
 }
 
