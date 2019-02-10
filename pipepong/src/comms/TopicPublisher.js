@@ -72,7 +72,7 @@ var TopicPublisher = function (topicName) {
             }
         });
 
-        publisher.connectToSolace();   
+        publisher.connectToSolace();
 
     };
 
