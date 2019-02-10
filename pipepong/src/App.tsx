@@ -52,6 +52,7 @@ interface BallMessage {
 
 class App extends React.Component<CLASSProps, CLASSState> {
     commHandler:CommHandler;
+    pong:Pong|null;
     constructor(props: CLASSProps) {
         super(props);
         this.state = {
@@ -62,6 +63,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             leaderboard: [],
             lost: false,
         }
+        this.pong = null;
         this.leaderboardCallBack = this.leaderboardCallBack.bind(this);
         this.leaveGame = this.leaveGame.bind(this);
         this.loseGame = this.loseGame.bind(this);
@@ -98,9 +100,10 @@ class App extends React.Component<CLASSProps, CLASSState> {
     console.log("Leave Callback", message);
   }
   ballCallBack(message:BallMessage){
-    if (this.state.sessionId == message.targetSessionId){
-      this.generateBall(message.velocity, message.angle, message.sessionId);
-    }
+    console.log("a ball was found")
+    // if (this.state.sessionId == message.targetSessionId){
+    console.log("a ball was received")
+    this.generateBall(message.velocity, message.angle, message.sessionId);
   }
   pingCallBack(){
     console.log("received ping")
@@ -109,6 +112,9 @@ class App extends React.Component<CLASSProps, CLASSState> {
 
   generateBall(velocity:number, angle:number, source:string){
     console.log("A ball was made with\nvelocity: " + velocity + "\nangle: " + angle)
+    if(this.pong){
+      this.pong.addBall(700, 100, "black", velocity, angle, source);
+    }
   }
 
   leaveGame(sessionId:string, reason:string, killedBy:string){
@@ -156,7 +162,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             <table>
               <tr>
                 <td>
-                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame} sendBallCallBack={this.sendBall}/>
+                  <Pong ref={pong => {this.pong = pong}} height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color} loseCallback={this.loseGame} sendBallCallBack={this.sendBall}/>
                 </td>
                 <td>
                   <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>
