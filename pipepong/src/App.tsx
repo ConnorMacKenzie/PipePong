@@ -4,6 +4,10 @@ import Pong from './components/Pong';
 import Login from './components/LoginPage';
 import CommHandler from './comms/CommHandler';
 import {v4} from 'uuid'
+import {processLeaderBoardList} from './tools/LeaderboardProcessor'
+
+const PONG_HEIGHT:number = 400;
+const PONG_WIDTH:number= 800;
 
 interface CLASSProps {
 }
@@ -12,7 +16,28 @@ interface CLASSState {
     joined: Boolean;
     name: string;
     color: string;
-    uuid: string;
+    sessionId: string;
+    leaderboard: Array<object>;
+}
+
+interface JoinMessage {
+  sessionId:string;
+  name:string;
+  color:string;
+}
+interface LeaderBoardMessage {
+  leaderboard:Array<object>;
+}
+interface LeaveMessage {
+  sessionId:string;
+  reason:string;
+  killedBy:string;
+}
+interface BallMessage {
+  sessionId:string;
+  targetSessionId:string;
+  velocity:number;
+  angle:number;
 }
 
 class App extends React.Component<CLASSProps, CLASSState> {
@@ -23,9 +48,10 @@ class App extends React.Component<CLASSProps, CLASSState> {
             joined: false,
             name: "",
             color: "#00FF00",
-            uuid: "",
+            sessionId: "",
+            leaderboard: [],
         }
-        this.commHandler = new CommHandler();
+        this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack);
         this.commHandler.connect();
     };
 
@@ -35,19 +61,42 @@ class App extends React.Component<CLASSProps, CLASSState> {
         joined: true,
         name:name,
         color: color,
-        uuid: v4(),
+        sessionId: v4(),
     });
-    this.commHandler.publishJoin(this.state.uuid,
+    this.commHandler.publishJoin(this.state.sessionId,
                                  this.state.name,
                                  this.state.color)
+  }
+  leaderboardCallBack(message:LeaderBoardMessage){
+    var leaderboard = message.leaderboard;
+    processLeaderBoardList(leaderboard, PONG_HEIGHT)
+    this.setState({
+      leaderboard: leaderboard
+    })
+  }
+  joinCallBack(sessionId:string, name:string, color:string){
+    console.log();
+  }
+  leaveCallBack(){
+    console.log();
+  }
+  ballCallBack(message:BallMessage){
+    if (this.state.sessionId == message.targetSessionId){
+      this.generateBall(message.velocity, message.angle, message.sessionId);
+    }
+  }
+
+  generateBall(velocity:number, angle:number, source:string){
+    console.log("A ball was made with\nvelocity: " + velocity + "\nangle: " + angle)
   }
 
   render() {
       if(this.state.joined)
-        return(<Pong/>);
+        return(<Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard}/>);
       else
         return(<Login handleJoin={(name,color) => this.join(name,color)}/>);
   }
 }
+
 
 export default App;

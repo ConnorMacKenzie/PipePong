@@ -1,13 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import Pipe from './Pipe';
 import PropTypes from 'prop-types'
-import {processLeaderBoardList} from '../tools/LeaderboardProcessor'
 
 
 class Leaderboard extends Component {
     constructor(props){
         super(props);
-        processLeaderBoardList(this.props.leaderboard, this.props.height);
     }
     render() {
         return (
