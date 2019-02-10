@@ -4,12 +4,12 @@ import * as picker from 'react-color';
 
 interface LoginPageProps {
     // properties this component recieves from parent here
-    loginAction?: (name:string, color:string) => void;
+    // loginAction?: (name:string, color:string) => void;
+    handleJoin?: () => void;
 }
 
 interface LoginPageState {
     // any variables that can affect the UI (when updated should re-render)
-    loggedIn: Boolean;
     enteredUsername: string;
     color: string;
 }
@@ -18,7 +18,6 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     constructor(props: LoginPageProps) {
         super(props);
         this.state = {
-            loggedIn: false,
             enteredUsername: "",
             color: "#00FF00"
         };
@@ -31,7 +30,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                     WELCOME TO PIPE PONG
                     {" " + this.state.enteredUsername.toUpperCase() + "!!!"}
                 </h1>
-                <button onClick={() => this.loginAction()}>
+                <button onClick={() => this.handleJoin()}>
                 Join Game
                 </button>
                 <input value = {this.state.enteredUsername} onChange = {this.updateUsername}/>
@@ -41,9 +40,9 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
             </div>
         )
     }
-    loginAction(){
-        if(this.props.loginAction !== undefined){
-            this.props.loginAction(this.state.enteredUsername, "red");
+    handleJoin(){
+        if(this.props.handleJoin !== undefined){
+            this.props.handleJoin();
         }
     }
     updateUsername(username: React.ChangeEvent<HTMLInputElement>){

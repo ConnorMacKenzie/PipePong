@@ -3,14 +3,33 @@ import './App.css';
 import Pong from './components/Pong';
 import Login from './components/LoginPage';
 
-class App extends Component {
+interface CLASSProps {
+}
+
+interface CLASSState {
+    joined: Boolean;
+}
+
+class App extends React.Component<CLASSProps, CLASSState> {
+    constructor(props: CLASSProps) {
+        super(props);
+        this.state = {
+            joined: false,
+            }
+    };
+
+
+  join() {
+    this.setState({
+        joined: true,
+    });
+  }
+
   render() {
-    return (
-      <div className="App">
-      <Login/>
-        <Pong/>
-      </div>
-    );
+      if(this.state.joined)
+        return(<Pong/>);
+      else
+        return(<Login handleJoin={() => this.join()}/>);
   }
 }
 
