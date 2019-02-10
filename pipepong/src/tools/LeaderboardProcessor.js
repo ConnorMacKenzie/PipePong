@@ -6,7 +6,6 @@ function processLeaderBoardList(leaderboard, height){
         player.height = height*player.timeAlive/total;
         player.y = offset;
         offset += player.height;
-        player.color = getRandomColor();
     })
 }
 
@@ -23,14 +22,5 @@ Array.prototype.sum = function(prop){
     }
     return total
 }
-
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
 
 export {processLeaderBoardList}

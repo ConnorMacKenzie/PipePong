@@ -35,10 +35,11 @@ class CommHandler {
         this.leaderboardSubscriber.connect();
     }
 
-    publishJoin = function(sessionId, name){
+    publishJoin = function(sessionId, name, color){
         var message = {
             sessionId: sessionId,
-            name: name
+            name: name,
+            color: color
         }
         this.joinPublisher.publish(JSON.stringify(message));
     }
