@@ -4,14 +4,14 @@ import { TwitterPicker, ColorResult} from 'react-color';
 
 interface LoginPageProps {
     // properties this component recieves from parent here
-    handleJoin?: (name:string, color:string) => void;
+    handleJoin?: (name:string, ballColor:string) => void;
     // handleJoin?: () => void;
 }
 
 interface LoginPageState {
     // any variables that can affect the UI (when updated should re-render)
     enteredUsername: string;
-    color: string;
+    ballColor: string;
 }
 
 class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
@@ -19,7 +19,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         super(props);
         this.state = {
             enteredUsername: "",
-            color: "#00FF00"
+            ballColor: "#00FF00"
         };
         this.updateUsername = this.updateUsername.bind(this);
     }
@@ -30,7 +30,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                     WELCOME TO PIPE PONG
                     {" " + this.state.enteredUsername.toUpperCase() + "!!!"}
                 </h1>
-                <button onClick={() => this.handleJoin()} style={{background:this.state.color}}>
+                <button onClick={() => this.handleJoin()} style={{background:this.state.ballColor}}>
                 Join Game
                 </button>
                 <input value = {this.state.enteredUsername} onChange = {this.updateUsername}/>
@@ -47,12 +47,19 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                 <p>
                     Welcome! This is just like a regular game of Pong, just hit the ball back towards the right with your paddle
                     and stay in the game as long as possible.
+                    <br/>
+                    When a ball goes through a pipe it will go to the player listed on the pipe 
+                    (So make sure to send lots to those high ranking players)
+                    <br/>
+                </p>
                     
-                    <br/>
-                    <br/>
+                <h3>
+                    Controls
+                </h3>
+                <p>
                     Move your paddle up with 'k' and down with 'j'.
                     <br/>
-                    D'ONT CLICK THE SCREEN OR ELSE YOU MIGHT BRAKE THE PADDLE AND HAVE TO RESTART
+                   HAVE THE 'click here to play' SELECTED TO BE ABLE TO MOVE THE  PADDLE
                     <br/>
                 </p>
             </div>
@@ -60,7 +67,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
     handleJoin(){
         if(this.props.handleJoin !== undefined){
-            this.props.handleJoin(this.state.enteredUsername, this.state.color);
+            this.props.handleJoin(this.state.enteredUsername, this.state.ballColor);
         }
     }
    
@@ -71,7 +78,7 @@ class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
     changeColor(color:ColorResult){
         this.setState({
-            color: color.hex
+            ballColor: color.hex
         })
     }
 }

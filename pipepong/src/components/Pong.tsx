@@ -7,9 +7,10 @@ const PLAYWIDTH = 800;
 const SHAPEWIDTH = 40;
 
 interface PongProps {
-  height:number,
-  width:number,
+  height:number
+  width:number
   leaderboard:Array<object>
+  playerColor:string
 }
 interface PongState {
   paddleDistFromWall: number;
@@ -53,7 +54,7 @@ class Pong extends Component<PongProps, PongState> {
   render() {
     return (
         <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
-           <Ball curX={this.state.curX} curY={this.state.curY}/>
+           <Ball curX={this.state.curX} curY={this.state.curY} playerColor={this.props.playerColor}/>
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall}/>
     </div>
     );

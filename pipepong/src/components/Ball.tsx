@@ -5,6 +5,7 @@ const SHAPEWIDTH = 40;
 interface CLASSProps {
     curX : number;
     curY : number;
+    playerColor : string
 }
 
 interface CLASSState {
@@ -25,7 +26,12 @@ class Ball extends React.Component<CLASSProps, CLASSState> {
     }
     return (
       <svg style={Ballstyle} height={"" + SHAPEWIDTH + "px"} width={"" + SHAPEWIDTH + "px"}>
-        <circle cx={"" + SHAPEWIDTH/2 + "px"} cy={"" + SHAPEWIDTH/2 + "px"} r={"" + SHAPEWIDTH/2 + "px"} fill="pink" />
+        <circle 
+          cx={"" + SHAPEWIDTH/2 + "px"} 
+          cy={"" + SHAPEWIDTH/2 + "px"} 
+          r={"" + SHAPEWIDTH/2 + "px"} 
+          fill={this.props.playerColor}
+        />
       </svg>
     );
   }

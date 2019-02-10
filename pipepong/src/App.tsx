@@ -108,7 +108,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             <table>
               <tr>
                 <td>
-                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard}/>
+                  <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard} playerColor={this.state.color}/>
                 </td>
                 <td>
                   <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>
