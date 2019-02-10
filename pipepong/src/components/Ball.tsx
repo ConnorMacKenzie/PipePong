@@ -2,26 +2,37 @@ import React, { Component } from 'react';
 
 const SHAPEWIDTH = 40;
 
-interface CLASSProps {
-    curX : number;
-    curY : number;
-    playerColor : string
+export interface BallProps {
+    initialX : number;
+    initialY : number;
+    playerColor : string;
+    velocity: number;
+    angle: number;
+    originatingPlayer: string; 
 }
 
-interface CLASSState {
+export interface BallState {
+  curX: number;
+  curY: number;
+  dx: number;
+  dy: number;
 }
-class Ball extends React.Component<CLASSProps, CLASSState> {
-  constructor(props : any) {
+class Ball extends React.Component<BallProps, BallState> {
+  constructor(props : BallProps) {
     super(props);
     this.state = {
+      curX: props.initialX,
+      curY: props.initialY,
+      dx: Math.cos(props.angle) * props.velocity,
+      dy: Math.sin(props.angle) * props.velocity
     };
   }
 
   render() {
     let Ballstyle : React.CSSProperties = {
         position: "relative",
-        top: ""+this.props.curY+"px",
-        left: ""+this.props.curX+"px",
+        top: ""+this.state.curY+"px",
+        left: ""+this.state.curX+"px",
         display: "block"
     }
     return (
@@ -34,6 +45,34 @@ class Ball extends React.Component<CLASSProps, CLASSState> {
         />
       </svg>
     );
+  }
+  /**
+   * bouces off a wall (changes direction)
+   * @param vertical does the bounce vertically?
+   * @param horizontal does the bounce horizontally? (direct bounce)
+   */
+  bounce(vertical:boolean = true, horizontal:boolean = false){
+    if(vertical){
+      this.setState({dy:-this.state.dy});
+    }
+    if(horizontal){
+      this.setState({dx:-this.state.dx});
+    }
+  }
+  /**
+   * moves the ball by increment
+   */
+  updatePosition(){
+    this.setState((prevState)=>{return {
+      curX: prevState.curX + prevState.dx,
+      curY: prevState.curY + prevState.dy
+    }});
+  }
+  bounceOffPaddle(angle:number){
+    this.setState({
+      dx: Math.cos(angle) * this.props.velocity,
+      dy: Math.sin(angle) * this.props.velocity
+    })
   }
 }
 
