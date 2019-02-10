@@ -5,6 +5,7 @@ import Login from './components/LoginPage';
 import CommHandler from './comms/CommHandler';
 import {v4} from 'uuid'
 import {processLeaderBoardList} from './tools/LeaderboardProcessor'
+import Leaderboard from './components/Leaderboard';
 
 const PONG_HEIGHT:number = 400;
 const PONG_WIDTH:number= 800;
@@ -51,6 +52,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
             sessionId: "",
             leaderboard: [],
         }
+        this.leaderboardCallBack = this.leaderboardCallBack.bind(this);
         this.commHandler = new CommHandler(this.joinCallBack, this.ballCallBack, this.leaveCallBack, this.leaderboardCallBack);
         this.commHandler.connect();
     };
@@ -69,7 +71,7 @@ class App extends React.Component<CLASSProps, CLASSState> {
   }
   leaderboardCallBack(message:LeaderBoardMessage){
     var leaderboard = message.leaderboard;
-    processLeaderBoardList(leaderboard, PONG_HEIGHT)
+    processLeaderBoardList(leaderboard, PONG_HEIGHT);
     this.setState({
       leaderboard: leaderboard
     })
@@ -92,7 +94,18 @@ class App extends React.Component<CLASSProps, CLASSState> {
 
   render() {
       if(this.state.joined)
-        return(<Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard}/>);
+        return(
+          <table>
+            <tr>
+              <td>
+                <Pong height={PONG_HEIGHT} width={PONG_WIDTH} leaderboard={this.state.leaderboard}/>
+              </td>
+              <td>
+                <Leaderboard leaderboard={this.state.leaderboard} height={PONG_HEIGHT} width={PONG_WIDTH/10} x={9*PONG_WIDTH/10} y="0"/>
+              </td>
+            </tr>
+          </table>
+        );
       else
         return(<Login handleJoin={(name,color) => this.join(name,color)}/>);
   }

@@ -103,7 +103,7 @@ var TopicSubscriber = function (topicName, receiveHandler) {
         });
         // define message event listener
         subscriber.session.on(solace.SessionEventCode.MESSAGE, function (message) {
-            receiveHandler(message);
+            receiveHandler(JSON.parse(message.Ok));
             console.log('Received message: "' + message.getBinaryAttachment() + '", details:\n' +
                 message.dump());
         });
