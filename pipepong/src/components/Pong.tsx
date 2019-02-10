@@ -55,26 +55,21 @@ class Pong extends Component<PongProps, PongState> {
         <div style={{height:""+this.props.height+"px", width: ""+this.props.width+"px", border: "solid"}}>
            <Ball curX={this.state.curX} curY={this.state.curY}/>
            <Paddle playHeight={PLAYHEIGHT} distanceFromWall={this.state.paddleDistFromWall}/>
-           <input
-              ref={(input => this.fieldInput=input)}
-              type="text"
-              placeholder="click here to play"
-              value=""
-              // onKeyPress = {(e)=>this.handleInput(e)}
-              onChange = {(e)=>this.handleInput(e)}
-            ></input>
     </div>
     );
   }
   componentDidMount(){
     if(this.fieldInput !== null){this.fieldInput.focus()}
     setInterval(() => this.repositionBall() ,10);
+    document.addEventListener("keypress", (e)=>this.handleInput(e), false);
   }
-  handleInput(e:React.ChangeEvent<HTMLInputElement>){
+
+
+  handleInput(e:any){
     let move = 0;
-    if (e.target.value == "j"){
+    if (e.key == "j" && this.state.paddleDistFromWall < PLAYHEIGHT*3/4){
       move = 5; // move down screen
-    } else if (e.target.value == "k") {
+    } else if (e.key == "k" && this.state.paddleDistFromWall >= 5) {
       move = -5; // move up screen
     }
     this.setState({
