@@ -2,7 +2,7 @@ import TopicPublisher from './TopicPublisher'
 import TopicSubscriber from './TopicSubscriber'
 
 class CommHandler {
-    constructor(joinHandler, ballHandler, leaveHandler, leaderboardHandler){
+    constructor(joinHandler, ballHandler, leaveHandler, leaderboardHandler, pingHandler){
         // define all the subscribers
         // var testHandler = function(){
         //     console.log("Test message was sent")
@@ -13,11 +13,13 @@ class CommHandler {
         this.joinPublisher = TopicPublisher('join');
         this.ballPublisher = TopicPublisher('ball');
         this.leavePublisher = TopicPublisher('leave');
+        this.pongPublisher = TopicPublisher('pong');
         // this.testSubscriber = TopicSubscriber('test', testHandler);
         this.joinSubscriber = TopicSubscriber('join', joinHandler);
         this.ballSubscriber = TopicSubscriber('ball', ballHandler);
         this.leaveSubscriber = TopicSubscriber('leave', leaveHandler);
         this.leaderboardSubscriber = TopicSubscriber('leaderboard', leaderboardHandler);
+        this.pingSubscriber = TopicSubscriber('ping', pingHandler)
     }
 
     connect = function(){
@@ -26,6 +28,7 @@ class CommHandler {
         this.joinPublisher.connect();
         this.ballPublisher.connect();
         this.leavePublisher.connect();
+        this.pongPublisher.connect();
 
         // connect all the subscribers to the communication channel
         // this.testSubscriber.connect();
@@ -33,6 +36,7 @@ class CommHandler {
         this.ballSubscriber.connect();
         this.leaveSubscriber.connect();
         this.leaderboardSubscriber.connect();
+        this.pingSubscriber.connect();
     }
 
     publishJoin = function(sessionId, name, color){
@@ -59,6 +63,12 @@ class CommHandler {
             killedBy: killedBy
         }
         this.leavePublisher.publish(JSON.stringify(message));
+    }
+    publishPong = function(sessionId){
+        var message = {
+            sessionId: sessionId
+        }
+        this.pongPublisher.publish(JSON.stringify(message));
     }
     publishTest = function(item){
         var message = {
