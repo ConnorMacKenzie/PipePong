@@ -1,54 +1,46 @@
 import solace from 'solclientjs';
 
 const HOSTURL = "ws://mr4b11zr98z.messaging.mymaas.net:80";
-const USERNAME = "solace-cloud-client";
+var USERNAME = "solace-cloud-client";
 const VPN = "msgvpn-4b11zr985";
 const PASS = "13hvb0guu1h4c5934o0cjn1rkl";
 
 var TopicPublisher = function (topicName) {
-    'use strict';
+    var factoryProps = new solace.SolclientFactoryProperties();
+    // factoryProps.profile = solace.SolclientFactoryProfiles.version10;
+    solace.SolclientFactory.init(factoryProps);
+
     var publisher = {};
     publisher.session = null;
     publisher.topicName = topicName;
+    publisher.connected = false;
 
-    // Logger
-    // publisher.log = function (line) {
-    //     var now = new Date();
-    //     var time = [('0' + now.getHours()).slice(-2), ('0' + now.getMinutes()).slice(-2),
-    //         ('0' + now.getSeconds()).slice(-2)];
-    //     var timestamp = '[' + time.join(':') + '] ';
-    //     console.log(timestamp + line);
-    //     var logTextArea = document.getElementById('log');
-    //     logTextArea.value += timestamp + line + '\n';
-    //     logTextArea.scrollTop = logTextArea.scrollHeight;
-    // };
-
-    publisher.log('\n*** Publisher to topic "' + publisher.topicName + '" is ready to connect ***');
+    console.log('\n*** Publisher to topic "' + publisher.topicName + '" is ready to connect ***');
 
     // Establishes connection to Solace message router
     publisher.connect = function () {
         // extract params
         if (publisher.session !== null) {
-            publisher.log('Already connected and ready to publish messages.');
+            console.log('Already connected and ready to publish messages.');
             return;
         }
         var hosturl = HOSTURL;
         // check for valid protocols
         if (hosturl.lastIndexOf('ws://', 0) !== 0 && hosturl.lastIndexOf('wss://', 0) !== 0 &&
             hosturl.lastIndexOf('http://', 0) !== 0 && hosturl.lastIndexOf('https://', 0) !== 0) {
-            publisher.log('Invalid protocol - please use one of ws://, wss://, http://, https://');
+            console.log('Invalid protocol - please use one of ws://, wss://, http://, https://');
             return;
         }
         var username = USERNAME;
         var pass = PASS;
         var vpn = VPN;
         if (!hosturl || !username || !pass || !vpn) {
-            publisher.log('Cannot connect: please specify all the Solace message router properties.');
+            console.log('Cannot connect: please specify all the Solace message router properties.');
             return;
         }
-        publisher.log('Connecting to Solace message router using url: ' + hosturl);
-        publisher.log('Client username: ' + username);
-        publisher.log('Solace message router VPN name: ' + vpn);
+        console.log('Connecting to Solace message router using url: ' + hosturl);
+        console.log('Client username: ' + username);
+        console.log('Solace message router VPN name: ' + vpn);
         // create session
         try {
             publisher.session = solace.SolclientFactory.createSession({
@@ -59,18 +51,21 @@ var TopicPublisher = function (topicName) {
                 password: pass,
             });
         } catch (error) {
-            publisher.log(error.toString());
+            console.log(error.toString());
         }
         // define session event listeners
         publisher.session.on(solace.SessionEventCode.UP_NOTICE, function (sessionEvent) {
-            publisher.log('=== Successfully connected and ready to publish messages. ===');
+            publisher.connected = true;
+            console.log('=== Successfully connected and ready to publish messages. ===');
         });
         publisher.session.on(solace.SessionEventCode.CONNECT_FAILED_ERROR, function (sessionEvent) {
-            publisher.log('Connection failed to the message router: ' + sessionEvent.infoStr +
+            publisher.connected = false;
+            console.log('Connection failed to the message router: ' + sessionEvent.infoStr +
                 ' - check correct parameter values and connectivity!');
         });
         publisher.session.on(solace.SessionEventCode.DISCONNECTED, function (sessionEvent) {
-            publisher.log('Disconnected.');
+            publisher.connected = false;
+            console.log('Disconnected.');
             if (publisher.session !== null) {
                 publisher.session.dispose();
                 publisher.session = null;
@@ -86,7 +81,7 @@ var TopicPublisher = function (topicName) {
         try {
             publisher.session.connect();
         } catch (error) {
-            publisher.log(error.toString());
+            console.log(error.toString());
         }
     };
 
@@ -97,29 +92,30 @@ var TopicPublisher = function (topicName) {
             message.setDestination(solace.SolclientFactory.createTopicDestination(publisher.topicName));
             message.setBinaryAttachment(messageText);
             message.setDeliveryMode(solace.MessageDeliveryModeType.DIRECT);
-            publisher.log('Publishing message "' + messageText + '" to topic "' + publisher.topicName + '"...');
+            console.log('Publishing message "' + messageText + '" to topic "' + publisher.topicName + '"...');
             try {
                 publisher.session.send(message);
-                publisher.log('Message published.');
+                console.log('Message published.');
             } catch (error) {
-                publisher.log(error.toString());
+                console.log(error.toString());
             }
         } else {
-            publisher.log('Cannot publish because not connected to Solace message router.');
+            console.log('Cannot publish because not connected to Solace message router.');
         }
     };
 
     // Gracefully disconnects from Solace message router
     publisher.disconnect = function () {
-        publisher.log('Disconnecting from Solace message router...');
+        publisher.connected = false;
+        console.log('Disconnecting from Solace message router...');
         if (publisher.session !== null) {
             try {
                 publisher.session.disconnect();
             } catch (error) {
-                publisher.log(error.toString());
+                console.log(error.toString());
             }
         } else {
-            publisher.log('Not connected to Solace message router.');
+            console.log('Not connected to Solace message router.');
         }
     };
 
